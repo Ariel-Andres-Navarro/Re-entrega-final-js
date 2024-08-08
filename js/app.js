@@ -1,5 +1,6 @@
 // Variables del carrito
 let carrito = [];
+let productos = [];  // Variable para almacenar los productos cargados
 const listaCarrito = document.getElementById('lista-carrito');
 const totalElement = document.getElementById('total');
 const vaciarCarritoBtn = document.getElementById('vaciar-carrito');
@@ -16,7 +17,7 @@ const resumenCompraElement = document.getElementById('resumen-compra');
 const pagarBtn = document.getElementById('pagar');
 
 // Función para mostrar productos
-function mostrarProductos(productos) {
+function mostrarProductos() {
     const productosSection = document.getElementById('productos');
     productosSection.innerHTML = '';
 
@@ -43,8 +44,9 @@ function mostrarProductos(productos) {
 function cargarProductos() {
     fetch('./db/productos.json')
         .then(response => response.json())
-        .then(productos => {
-            mostrarProductos(productos);
+        .then(data => {
+            productos = data;
+            mostrarProductos();
         })
         .catch(error => console.error('Error al cargar productos:', error));
 }
@@ -205,6 +207,7 @@ cargarProductos();
 
 // Ocultar el carrito por defecto
 carritoSection.style.display = 'none';
+
 
 
 
