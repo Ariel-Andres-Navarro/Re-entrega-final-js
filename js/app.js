@@ -1,10 +1,3 @@
-// Datos de productos
-const productos = [
-    { id: 1, nombre: 'Producto 1', precio: 10 },
-    { id: 2, nombre: 'Producto 2', precio: 20 },
-    { id: 3, nombre: 'Producto 3', precio: 30 }
-];
-
 // Variables del carrito
 let carrito = [];
 const listaCarrito = document.getElementById('lista-carrito');
@@ -23,7 +16,7 @@ const resumenCompraElement = document.getElementById('resumen-compra');
 const pagarBtn = document.getElementById('pagar');
 
 // Función para mostrar productos
-function mostrarProductos() {
+function mostrarProductos(productos) {
     const productosSection = document.getElementById('productos');
     productosSection.innerHTML = '';
 
@@ -44,6 +37,16 @@ function mostrarProductos() {
             agregarAlCarrito(parseInt(button.getAttribute('data-id')));
         });
     });
+}
+
+// Función para cargar productos desde el archivo JSON
+function cargarProductos() {
+    fetch('./db/productos.json')
+        .then(response => response.json())
+        .then(productos => {
+            mostrarProductos(productos);
+        })
+        .catch(error => console.error('Error al cargar productos:', error));
 }
 
 // Función para agregar productos al carrito
@@ -197,11 +200,12 @@ function cargarCarrito() {
 }
 
 // Mostrar productos al cargar la página
-mostrarProductos();
 cargarCarrito();
+cargarProductos();
 
 // Ocultar el carrito por defecto
 carritoSection.style.display = 'none';
+
 
 
 
