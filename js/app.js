@@ -1,5 +1,3 @@
-
-
 // Datos de productos
 const productos = [
     { id: 1, nombre: 'Producto 1', precio: 10 },
@@ -40,7 +38,7 @@ function mostrarProductos() {
         productosSection.appendChild(productoElemento);
     });
 
-    // Asigno eventos a los botones de agregar al carrito
+    // Asignar eventos a los botones de agregar al carrito
     document.querySelectorAll('#productos button').forEach(button => {
         button.addEventListener('click', () => {
             agregarAlCarrito(parseInt(button.getAttribute('data-id')));
@@ -201,3 +199,9 @@ function cargarCarrito() {
 // Mostrar productos al cargar la página
 mostrarProductos();
 cargarCarrito();
+
+// Ocultar el carrito por defecto
+carritoSection.style.display = 'none';
+
+
+
