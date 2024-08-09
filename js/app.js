@@ -48,8 +48,15 @@ function agregarAlCarrito(id) {
     } else {
         carrito.push({ ...producto, cantidad: 1 });
     }
-    
     actualizarCarrito();
+
+    // Mostrar notificación con SweetAlert2
+ Swal.fire({
+    title: '¡Producto agregado al carrito!',
+    text: `${producto.nombre} ha sido añadido al carrito.`,
+    icon: 'success',
+    confirmButtonText: 'OK'
+  });
 }
 
 // Función para ajustar la cantidad de un producto
@@ -137,11 +144,16 @@ function ocultarModal() {
     modal.style.display = 'none';
 }
 
-// Función para manejar el pago
 function manejarPago() {
-    alert('Gracias por su compra');
-    vaciarCarrito();
-    ocultarModal();
+    Swal.fire({
+        title: '¡Gracias por su compra!',
+        text: 'Su compra ha sido procesada.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+    }).then(() => {
+        vaciarCarrito();
+        ocultarModal();
+    });
 }
 
 // Función para cargar el carrito desde localStorage
