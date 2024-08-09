@@ -1,54 +1,41 @@
 // Variables del carrito
 let carrito = [];
-let productos = [];  // Variable para almacenar los productos cargados
 const listaCarrito = document.getElementById('lista-carrito');
 const totalElement = document.getElementById('total');
 const vaciarCarritoBtn = document.getElementById('vaciar-carrito');
 const cerrarCarritoBtn = document.getElementById('cerrar-carrito');
 const verCarritoBtn = document.getElementById('ver-carrito');
-const finalizarCompraBtn = document.getElementById('finalizar-compra');
 const carritoSection = document.getElementById('carrito');
 const contadorCarrito = document.getElementById('contador-carrito');
-
-// Variables del modal
+const finalizarCompraBtn = document.getElementById('finalizar-compra');
 const modal = document.getElementById('modal');
 const cerrarModalBtn = document.getElementById('cerrar-modal');
 const resumenCompraElement = document.getElementById('resumen-compra');
 const pagarBtn = document.getElementById('pagar');
+let productos = [];
 
-// Función para mostrar productos
-function mostrarProductos() {
-    const productosSection = document.getElementById('productos');
-    productosSection.innerHTML = '';
+// Función para cargar productos desde JSON
+async function cargarProductos() {
+    try {
+        const response = await fetch('db/productos.json'); // Ruta del archivo JSON
+        productos = await response.json();
+        
+        const productosSection = document.getElementById('productos');
+        productosSection.innerHTML = '';
 
-    productos.forEach(producto => {
-        const productoElemento = document.createElement('div');
-        productoElemento.classList.add('producto');
-        productoElemento.innerHTML = `
-            <h3>${producto.nombre}</h3>
-            <p>Precio: $${producto.precio}</p>
-            <button data-id="${producto.id}">Agregar al carrito</button>
-        `;
-        productosSection.appendChild(productoElemento);
-    });
-
-    // Asignar eventos a los botones de agregar al carrito
-    document.querySelectorAll('#productos button').forEach(button => {
-        button.addEventListener('click', () => {
-            agregarAlCarrito(parseInt(button.getAttribute('data-id')));
+        productos.forEach(producto => {
+            const productoElemento = document.createElement('div');
+            productoElemento.innerHTML = `
+                <img src="${producto.img}" alt="${producto.nombre}" style="width: 100px; height: auto;">
+                <h3>${producto.nombre}</h3>
+                <p>Precio: $${producto.precio}</p>
+                <button onclick="agregarAlCarrito(${producto.id})">Agregar al carrito</button>
+            `;
+            productosSection.appendChild(productoElemento);
         });
-    });
-}
-
-// Función para cargar productos desde el archivo JSON
-function cargarProductos() {
-    fetch('./db/productos.json')
-        .then(response => response.json())
-        .then(data => {
-            productos = data;
-            mostrarProductos();
-        })
-        .catch(error => console.error('Error al cargar productos:', error));
+    } catch (error) {
+        console.error('Error cargando productos:', error);
+    }
 }
 
 // Función para agregar productos al carrito
@@ -100,14 +87,14 @@ function actualizarCarrito() {
         const subtotal = producto.precio * producto.cantidad;
         total += subtotal;
         totalProductos += producto.cantidad;
-
+        
         const itemCarrito = document.createElement('li');
         itemCarrito.innerHTML = `
             ${producto.nombre} - $${producto.precio} x ${producto.cantidad} = $${subtotal.toFixed(2)}
             <div class="cantidad-boton">
-                <button class="ajustar-cantidad" data-id="${producto.id}" data-ajuste="-1">-</button>
-                <button class="ajustar-cantidad" data-id="${producto.id}" data-ajuste="1">+</button>
-                <button class="eliminar" data-id="${producto.id}">x</button>
+                <button onclick="ajustarCantidad(${producto.id}, -1)">-</button>
+                <button onclick="ajustarCantidad(${producto.id}, 1)">+</button>
+                <button onclick="eliminarDelCarrito(${producto.id})">x</button>
             </div>
         `;
         listaCarrito.appendChild(itemCarrito);
@@ -121,78 +108,43 @@ function actualizarCarrito() {
     // Mostrar u ocultar el contador
     contadorCarrito.style.display = totalProductos > 0 ? 'inline-block' : 'none';
 
-    // Guardar el carrito en localStorage
+    // Mostrar u ocultar el carrito
+    carritoSection.style.display = totalProductos > 0 ? 'block' : 'none';
+
+    // Guardar carrito en localStorage
     localStorage.setItem('carrito', JSON.stringify(carrito));
-
-    // Asignar eventos a los botones de ajustar cantidad y eliminar
-    document.querySelectorAll('.ajustar-cantidad').forEach(button => {
-        button.addEventListener('click', () => {
-            const id = parseInt(button.getAttribute('data-id'));
-            const ajuste = parseInt(button.getAttribute('data-ajuste'));
-            ajustarCantidad(id, ajuste);
-        });
-    });
-
-    document.querySelectorAll('.eliminar').forEach(button => {
-        button.addEventListener('click', () => {
-            const id = parseInt(button.getAttribute('data-id'));
-            eliminarDelCarrito(id);
-        });
-    });
 }
 
-// Función para finalizar la compra
-function finalizarCompra() {
-    let resumenCompra = 'Resumen de la Compra:\n\n';
-    let total = 0;
-
-    carrito.forEach(producto => {
-        const subtotal = producto.precio * producto.cantidad;
-        resumenCompra += `${producto.nombre}: $${producto.precio} x ${producto.cantidad} = $${subtotal.toFixed(2)}\n`;
-        total += subtotal;
-    });
-
-    resumenCompra += `\nTotal: $${total.toFixed(2)}`;
-
-    // Mostrar el resumen en el modal
-    resumenCompraElement.textContent = resumenCompra;
-
-    // Mostrar el modal
-    modal.style.display = 'block';
-}
-
-// Función para cerrar el carrito (esconderlo)
-function cerrarCarrito() {
-    carritoSection.style.display = 'none';
-}
-
-// Función para mostrar el carrito (mostrarlo)
-function verCarrito() {
+// Función para mostrar el carrito
+function mostrarCarrito() {
     carritoSection.style.display = 'block';
 }
 
-// Función para cerrar el modal
-function cerrarModal() {
+// Función para ocultar el carrito
+function ocultarCarrito() {
+    carritoSection.style.display = 'none';
+}
+
+// Función para mostrar el modal de resumen de compra
+function mostrarModal() {
+    const resumen = carrito.map(p => `${p.nombre} - $${p.precio} x ${p.cantidad} = $${(p.precio * p.cantidad).toFixed(2)}`).join('\n');
+    resumenCompraElement.textContent = resumen + `\n\nTotal: $${totalElement.textContent.split('$')[1]}`;
+    modal.style.display = 'block';
+}
+
+// Función para ocultar el modal
+function ocultarModal() {
     modal.style.display = 'none';
 }
 
 // Función para manejar el pago
-function pagar() {
-    alert('¡Gracias por su compra!');
-    // Limpiar el carrito y ocultar el modal
+function manejarPago() {
+    alert('Gracias por su compra');
     vaciarCarrito();
-    cerrarModal();
+    ocultarModal();
 }
 
-// Event Listeners
-vaciarCarritoBtn.addEventListener('click', vaciarCarrito);
-cerrarCarritoBtn.addEventListener('click', cerrarCarrito);
-verCarritoBtn.addEventListener('click', verCarrito);
-finalizarCompraBtn.addEventListener('click', finalizarCompra);
-cerrarModalBtn.addEventListener('click', cerrarModal);
-pagarBtn.addEventListener('click', pagar);
-
-// Cargar el carrito desde localStorage al cargar la página
+// Función para cargar el carrito desde localStorage
 function cargarCarrito() {
     const carritoGuardado = JSON.parse(localStorage.getItem('carrito'));
     if (carritoGuardado) {
@@ -201,12 +153,16 @@ function cargarCarrito() {
     }
 }
 
-// Mostrar productos al cargar la página
-cargarCarrito();
-cargarProductos();
+// Event Listeners
+vaciarCarritoBtn.addEventListener('click', vaciarCarrito);
+cerrarCarritoBtn.addEventListener('click', ocultarCarrito);
+verCarritoBtn.addEventListener('click', mostrarCarrito);
+finalizarCompraBtn.addEventListener('click', mostrarModal);
+cerrarModalBtn.addEventListener('click', ocultarModal);
+pagarBtn.addEventListener('click', manejarPago);
 
-// Ocultar el carrito por defecto
-carritoSection.style.display = 'none';
+// Mostrar productos y carrito al cargar la página
+cargarProductos().then(cargarCarrito);
 
 
 

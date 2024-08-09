@@ -3,48 +3,36 @@
         "id": 1,
         "nombre": "Yacochuya Malbec",
         "precio": 51000,
-        "img": 
-        "https://www.espaciovino.com.ar/media/default/0001/54/thumb_53455_default_small.jpeg"
-        
+        "img": "https://www.espaciovino.com.ar/media/default/0001/54/thumb_53455_default_small.jpeg"   
     },
     {
         "id": 2,
         "nombre": "Sapo de otro Pozo blend ",
         "precio": 15200,
-        "img":
-        "https://www.espaciovino.com.ar/media/default/0001/59/thumb_58716_default_small.jpeg"
-        
+        "img":"https://www.espaciovino.com.ar/media/default/0001/59/thumb_58716_default_small.jpeg"  
     },
     {
         "id": 3,
         "nombre": "Alegoría Malbec",
         "precio": 13600,
-        "img":
-        "https://www.espaciovino.com.ar/media/default/0001/61/thumb_60441_default_small.jpeg"
-        
+        "img":"https://www.espaciovino.com.ar/media/default/0001/61/thumb_60441_default_small.jpeg"    
     },
     {
         "id": 4,
         "nombre": "Angelica Zapata Malbec",
         "precio": 25130,
-        "img":
-        "https://www.espaciovino.com.ar/media/default/0001/53/thumb_52803_default_small.jpeg"
-       
+        "img":"https://www.espaciovino.com.ar/media/default/0001/53/thumb_52803_default_small.jpeg"  
     },
     {
         "id": 5,
         "nombre": "DV Catena Cabernet Malbec",
         "precio": 9380,
-        "img":
-        "https://www.espaciovino.com.ar/media/default/0001/53/thumb_52791_default_small.jpeg"
-        
+        "img":"https://www.espaciovino.com.ar/media/default/0001/53/thumb_52791_default_small.jpeg"       
     },
     {
         "id": 6,
         "nombre": "Familia Gascón Red blend",
         "precio": 6900,
-        "img":
-        "https://www.espaciovino.com.ar/media/default/0001/70/thumb_69197_default_small.jpeg"
-        
+        "img":"https://www.espaciovino.com.ar/media/default/0001/70/thumb_69197_default_small.jpeg"   
     }
 ]
